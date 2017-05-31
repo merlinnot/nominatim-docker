@@ -66,9 +66,9 @@ RUN service postgresql start && \
 
 # Configure Apache
 COPY nominatim.conf /etc/apache2/sites-available/000-default.conf
-RUN a2ensite 000-default
 
 # Install Nominatim
+USER nominatim
 WORKDIR /srv/nominatim
 RUN git clone --recursive git://github.com/openstreetmap/Nominatim.git
 RUN wget -O Nominatim/data/country_osm_grid.sql.gz \
@@ -78,25 +78,20 @@ RUN mkdir ${USERHOME}/Nominatim/build && \
     cmake ${USERHOME}/Nominatim && \
     make
 
-# Build website
-RUN rm -rf /var/www/html/* && \
-    ${USERHOME}/Nominatim/build/utils/setup.php \
-      --create-website /var/www/html
-
 # Initial import
 ENV PBF_DATA http://download.geofabrik.de/europe/monaco-latest.osm.pbf
 RUN curl -L $PBF_DATA --create-dirs -o /srv/nominatim/src/data.osm.pbf
 ENV IMPORT_THREADS 14
-RUN service postgresql start && \
-    chown -R nominatim:nominatim /srv/nominatim/src && \
-    sudo -u nominatim ${USERHOME}/Nominatim/build/utils/setup.php \
+RUN sudo service postgresql start && \
+    ${USERHOME}/Nominatim/build/utils/setup.php \
       --osm-file /srv/nominatim/src/data.osm.pbf \
       --all \
       --threads $IMPORT_THREADS \
       --osm2pgsql-cache 28000 && \
-    service postgresql stop
+    sudo service postgresql stop
 
 # Clean up
+USER root
 RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # Expose ports
