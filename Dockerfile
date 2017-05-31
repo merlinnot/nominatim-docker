@@ -10,6 +10,13 @@ CMD ["/sbin/my_init"]
 RUN apt-get -qq update && apt-get -qq upgrade -y -o \
       Dpkg::Options::="--force-confold"
 
+# Update locales
+RUN apt-get install -y --no-install-recommends locales
+ENV DEBIAN_FRONTEND noninteractive
+ENV LANG C.UTF-8
+RUN locale-gen en_US.UTF-8
+RUN update-locale LANG=en_US.UTF-8
+
 # Install build dependencies
 RUN apt-get install -y --no-install-recommends \
       build-essential cmake g++ libboost-dev libboost-system-dev \
@@ -17,11 +24,7 @@ RUN apt-get install -y --no-install-recommends \
       libbz2-dev libpq-dev libgeos-dev libgeos++-dev libproj-dev \
       postgresql-server-dev-9.5 postgresql-9.5-postgis-2.2 \
       postgresql-contrib-9.5 apache2 php php-pgsql libapache2-mod-php php-pear \
-      php-db git locales
-ENV DEBIAN_FRONTEND noninteractive
-ENV LANG C.UTF-8
-RUN locale-gen en_US.UTF-8
-RUN update-locale LANG=en_US.UTF-8
+      php-db git
 
 RUN useradd -d /srv/nominatim -s /bin/bash -m nominatim
 ENV USERNAME nominatim
