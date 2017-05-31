@@ -41,9 +41,9 @@ RUN apt-get install -y --no-install-recommends \
       php-db \
       php-pear \
       php-pgsql \
-      postgresql-9.5-postgis-2.2 \
-      postgresql-contrib-9.5 \
-      postgresql-server-dev-9.5 \
+      postgresql-9.6-postgis-2.3 \
+      postgresql-contrib-9.6 \
+      postgresql-server-dev-9.6 \
       python \
       python-pip \
       python-setuptools \
