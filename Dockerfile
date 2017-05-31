@@ -82,19 +82,19 @@ RUN mkdir ${USERHOME}/Nominatim/build && \
     make
 
 # Initial import
+USER root
 ENV PBF_DATA http://download.geofabrik.de/europe/monaco-latest.osm.pbf
 RUN curl -L $PBF_DATA --create-dirs -o /srv/nominatim/src/data.osm.pbf
 ENV IMPORT_THREADS 14
-RUN sudo service postgresql start && \
-    ${USERHOME}/Nominatim/build/utils/setup.php \
+RUN service postgresql start && \
+    sudo -u nominatim ${USERHOME}/Nominatim/build/utils/setup.php \
       --osm-file /srv/nominatim/src/data.osm.pbf \
       --all \
       --threads $IMPORT_THREADS \
       --osm2pgsql-cache 28000 && \
-    sudo service postgresql stop
+    service postgresql stop
 
 # Clean up
-USER root
 RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # Expose ports
