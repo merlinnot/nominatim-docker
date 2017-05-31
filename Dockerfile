@@ -1,6 +1,6 @@
 # -*-dockerfile-*-
 
-FROM phusion/baseimage:latest
+FROM ubuntu:16.04
 MAINTAINER Natan Sągol <m@merlinnot.com>
 
 ENV DEBIAN_FRONTEND noninteractive
@@ -22,7 +22,7 @@ RUN apt-get install -y --no-install-recommends \
       libbz2-dev libpq-dev libgeos-dev libgeos++-dev libproj-dev \
       postgresql-server-dev-9.5 postgresql-9.5-postgis-2.2 \
       postgresql-contrib-9.5 apache2 php php-pgsql libapache2-mod-php php-pear \
-      php-db git
+      php-db git sudo
 
 RUN useradd -d /srv/nominatim -s /bin/bash -m nominatim
 ENV USERNAME nominatim
