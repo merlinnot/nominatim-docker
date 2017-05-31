@@ -33,8 +33,14 @@ COPY postgresql-import.conf /etc/postgresql/9.5/main/postgresql.conf
 
 # Add postgresql users
 RUN apt-get install -y sudo
-RUN sudo -u postgres createuser -s $USERNAME
-RUN sudo -u postgres createuser www-data
+RUN sudo -u postgres psql postgres -tAc \
+      "SELECT 1 FROM pg_roles WHERE rolname='nominatim'" | \
+      grep -q 1 || \
+      sudo -u postgres createuser -s nominatim && \
+    sudo -u postgres psql postgres -tAc \
+      "SELECT 1 FROM pg_roles WHERE rolname='www-data'" | \
+      grep -q 1 || \
+      sudo -u postgres createuser -SDR www-data
 
 # Configure Apache
 COPY nominatim.conf /etc/apache2/conf-available/nominatim.conf
