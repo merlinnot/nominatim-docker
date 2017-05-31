@@ -3,9 +3,6 @@
 FROM ubuntu:16.04
 MAINTAINER Natan Sągol <m@merlinnot.com>
 
-# Use baseimage-docker's init system.
-CMD ["/sbin/my_init"]
-
 # Update image
 RUN apt-get -qq update && apt-get -qq upgrade -y -o \
       Dpkg::Options::="--force-confold"
@@ -56,7 +53,7 @@ RUN apt-get install -y --no-install-recommends \
 RUN useradd -d /srv/nominatim -s /bin/bash -m nominatim
 ENV USERNAME nominatim
 ENV USERHOME /srv/nominatim
-RUN chmod a+x $USERHOME
+RUN chmod a+x ${USERHOME}
 
 # Tune postgresql configuration
 COPY postgresql-import.conf /etc/postgresql/9.5/main/postgresql.conf
@@ -74,10 +71,12 @@ RUN a2enconf nominatim
 # Install Nominatim
 WORKDIR /srv/nominatim
 RUN git clone --recursive git://github.com/openstreetmap/Nominatim.git
-WORKDIR /srv/nominatim/Nominatim
-RUN wget -O data/country_osm_grid.sql.gz \
+RUN wget -O Nominatim/data/country_osm_grid.sql.gz \
       http://www.nominatim.org/data/country_grid.sql.gz
-RUN mkdir build && cd build && cmake $USERHOME/Nominatim && make
+RUN mkdir ${USERHOME}/Nominatim/build && \
+    cd ${USERHOME}/Nominatim/build && \
+    cmake ${USERHOME}/Nominatim && \
+    make
 
 # Initial import
 ENV PBF_DATA http://download.geofabrik.de/europe/monaco-latest.osm.pbf
