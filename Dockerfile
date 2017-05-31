@@ -32,6 +32,7 @@ RUN chmod a+x $USERHOME
 COPY postgresql-import.conf /etc/postgresql/9.5/main/postgresql.conf
 
 # Add postgresql users
+RUN apt-get install -y sudo
 RUN sudo -u postgres createuser -s $USERNAME
 RUN sudo -u postgres createuser www-data
 
