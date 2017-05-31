@@ -82,10 +82,10 @@ RUN mkdir ${USERHOME}/Nominatim/build && \
     make
 
 # Initial import
-USER root
 ENV PBF_DATA http://download.geofabrik.de/europe/monaco-latest.osm.pbf
 RUN curl -L $PBF_DATA --create-dirs -o /srv/nominatim/src/data.osm.pbf
 ENV IMPORT_THREADS 14
+USER root
 RUN service postgresql start && \
     sudo -u nominatim ${USERHOME}/Nominatim/build/utils/setup.php \
       --osm-file /srv/nominatim/src/data.osm.pbf \
