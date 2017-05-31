@@ -45,6 +45,7 @@ RUN a2enconf nominatim
 
 # Install Nominatim
 WORKDIR /srv/nominatim
+RUN apt-get install -y openssl ca-certificates
 RUN git clone --recursive git://github.com/openstreetmap/Nominatim.git
 WORKDIR /srv/nominatim/Nominatim
 RUN wget -O data/country_osm_grid.sql.gz \
