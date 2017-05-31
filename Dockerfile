@@ -34,8 +34,10 @@ COPY postgresql-import.conf /etc/postgresql/9.5/main/postgresql.conf
 
 # Add postgresql users
 RUN apt-get install -y sudo
-RUN sudo -u postgres createuser -s nominatim
-RUN sudo -u postgres createuser www-data
+RUN service postgresql start && \
+    sudo -u postgres createuser -s nominatim && \
+    sudo -u postgres createuser www-data && \
+    service postgresql stop
 
 # Configure Apache
 COPY nominatim.conf /etc/apache2/conf-available/nominatim.conf
