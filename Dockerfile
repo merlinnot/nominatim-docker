@@ -83,7 +83,7 @@ RUN mkdir ${USERHOME}/Nominatim/build && \
     make
 
 # Initial import
-ENV PBF_DATA http://download.geofabrik.de/europe/monaco-latest.osm.pbf
+ENV PBF_DATA http://download.geofabrik.de/europe-latest.osm.pbf
 RUN curl -L $PBF_DATA --create-dirs -o /srv/nominatim/src/data.osm.pbf
 ENV IMPORT_THREADS 14
 USER root

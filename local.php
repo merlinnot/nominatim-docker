@@ -6,7 +6,7 @@
  @define('CONST_Pyosmium_Binary', '/usr/local/bin/pyosmium-get-changes');
  // Website settings
  @define('CONST_Website_BaseURL', '/nominatim/');
- @define('CONST_Replication_Url', 'http://download.geofabrik.de/monaco-updates');
+ @define('CONST_Replication_Url', 'http://download.geofabrik.de/europe-updates');
  @define('CONST_Replication_MaxInterval', '86400');
  @define('CONST_Replication_Update_Interval', '86400');
  @define('CONST_Replication_Recheck_Interval', '900');
