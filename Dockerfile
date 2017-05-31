@@ -48,7 +48,8 @@ RUN apt-get install -y --no-install-recommends \
       python-pip \
       sudo \
       wget \
-      zlib1g-dev
+      zlib1g-dev && \
+    pip install osmium
 
 RUN useradd -d /srv/nominatim -s /bin/bash -m nominatim
 ENV USERNAME nominatim
