@@ -78,13 +78,18 @@ RUN mkdir ${USERHOME}/Nominatim/build && \
     cmake ${USERHOME}/Nominatim && \
     make
 
+# Build website
+RUN rm -rf /var/www/html/* && \
+    ${USERHOME}/Nominatim/build/utils/setup.php \
+      --create-website /var/www/html
+
 # Initial import
 ENV PBF_DATA http://download.geofabrik.de/europe/monaco-latest.osm.pbf
-ENV IMPORT_THREADS 14
 RUN curl -L $PBF_DATA --create-dirs -o /srv/nominatim/src/data.osm.pbf
+ENV IMPORT_THREADS 14
 RUN service postgresql start && \
     chown -R nominatim:nominatim /srv/nominatim/src && \
-    sudo -u nominatim ./build/utils/setup.php \
+    sudo -u nominatim ${USERHOME}/Nominatim/build/utils/setup.php \
       --osm-file /srv/nominatim/src/data.osm.pbf \
       --all \
       --threads $IMPORT_THREADS \
