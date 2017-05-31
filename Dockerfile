@@ -3,6 +3,12 @@
 FROM ubuntu:16.04
 MAINTAINER Natan Sągol <m@merlinnot.com>
 
+# Add sources
+RUN echo "deb http://apt.postgresql.org/pub/repos/apt xenial-pgdg main" >> \
+      /etc/apt/sources.list && \
+    wget --quiet -O - http://apt.postgresql.org/pub/repos/apt/ACCC4CF8.asc | \
+      apt-key add -
+
 # Update image
 RUN apt-get -qq update && apt-get -qq upgrade -y -o \
       Dpkg::Options::="--force-confold"
