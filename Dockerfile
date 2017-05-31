@@ -73,6 +73,9 @@ RUN service postgresql start && \
 # Clean up APT
 RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
+# Expose ports
+EXPOSE 8080
+
 # Init script
 WORKDIR /srv/nominatim
 COPY start.sh /srv/nominatim/start.sh
