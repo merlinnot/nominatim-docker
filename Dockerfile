@@ -53,6 +53,19 @@ RUN wget -O data/country_osm_grid.sql.gz \
       http://www.nominatim.org/data/country_grid.sql.gz
 RUN mkdir build && cd build && cmake $USERHOME/Nominatim && make
 
+# Initial import
+ENV PBF_DATA http://download.geofabrik.de/europe/monaco-latest.osm.pbf
+ENV IMPORT_THREADS 14
+RUN curl -L $PBF_DATA --create-dirs -o /srv/nominatim/src/data.osm.pbf
+RUN service postgresql start && \
+    chown -R nominatim:nominatim ./src && \
+    sudo -u nominatim ./build/utils/setup.php \
+      --osm-file /srv/nominatim/src/data.osm.pbf \
+      --all \
+      --threads $IMPORT_THREADS \
+      --osm2pgsql-cache 28000 && \
+    service postgresql stop
+
 # Clean up APT
 RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
