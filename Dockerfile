@@ -46,10 +46,11 @@ RUN apt-get install -y --no-install-recommends \
       postgresql-server-dev-9.5 \
       python \
       python-pip \
+      python-setuptools \
       sudo \
       wget \
-      zlib1g-dev && \
-    pip install osmium
+      zlib1g-dev
+RUN pip install osmium
 
 RUN useradd -d /srv/nominatim -s /bin/bash -m nominatim
 ENV USERNAME nominatim
