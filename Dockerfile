@@ -26,8 +26,8 @@ RUN apt-get install -y --no-install-recommends \
       libapache2-mod-php \
       libboost-dev \
       libboost-filesystem-dev \
+      libboost-python-dev \
       libboost-system-dev \
-      libbosst-python-dev \
       libbz2-dev \
       libexpat1-dev \
       libgeos-dev \
