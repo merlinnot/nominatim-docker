@@ -59,7 +59,7 @@ ENV IMPORT_THREADS 14
 RUN apt-get install -y curl
 RUN curl -L $PBF_DATA --create-dirs -o /srv/nominatim/src/data.osm.pbf
 RUN service postgresql start && \
-    chown -R nominatim:nominatim ./src && \
+    chown -R nominatim:nominatim ./build && \
     sudo -u nominatim ./build/utils/setup.php \
       --osm-file /srv/nominatim/src/data.osm.pbf \
       --all \
