@@ -50,6 +50,7 @@ RUN apt-get install -y --no-install-recommends \
       php-pear \
       php-pgsql \
       postgresql-9.6-postgis-2.3 \
+      postgresql-9.6-postgis-scripts \
       postgresql-contrib-9.6 \
       postgresql-server-dev-9.6 \
       python \
