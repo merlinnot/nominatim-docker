@@ -3,12 +3,6 @@
 FROM ubuntu:16.04
 MAINTAINER Natan Sągol <m@merlinnot.com>
 
-# Add sources
-RUN echo "deb http://apt.postgresql.org/pub/repos/apt xenial-pgdg main" >> \
-      /etc/apt/sources.list && \
-    wget --quiet -O - http://apt.postgresql.org/pub/repos/apt/ACCC4CF8.asc | \
-      apt-key add -
-
 # Update image
 RUN apt-get -qq update && apt-get -qq upgrade -y -o \
       Dpkg::Options::="--force-confold"
@@ -19,6 +13,14 @@ ENV DEBIAN_FRONTEND noninteractive
 ENV LANG C.UTF-8
 RUN locale-gen en_US.UTF-8
 RUN update-locale LANG=en_US.UTF-8
+
+# Add sources
+RUN apt-get install -y --no-install-recommends wget
+RUN echo "deb http://apt.postgresql.org/pub/repos/apt xenial-pgdg main" >> \
+      /etc/apt/sources.list && \
+    wget --quiet -O - http://apt.postgresql.org/pub/repos/apt/ACCC4CF8.asc | \
+      apt-key add -
+RUN apt-get -qq update
 
 # Install build dependencies
 RUN apt-get install -y --no-install-recommends \
@@ -54,7 +56,6 @@ RUN apt-get install -y --no-install-recommends \
       python-pip \
       python-setuptools \
       sudo \
-      wget \
       zlib1g-dev
 RUN pip install --upgrade pip
 RUN pip install osmium
