@@ -65,8 +65,8 @@ RUN service postgresql start && \
     service postgresql stop
 
 # Configure Apache
-COPY nominatim.conf /etc/apache2/conf-available/nominatim.conf
-RUN a2enconf nominatim
+COPY nominatim.conf /etc/apache2/sites-available/000-default.conf
+RUN a2ensite 000-default
 
 # Install Nominatim
 WORKDIR /srv/nominatim
@@ -96,7 +96,7 @@ RUN service postgresql start && \
       --osm2pgsql-cache 28000 && \
     service postgresql stop
 
-# Clean up APT
+# Clean up
 RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # Expose ports
