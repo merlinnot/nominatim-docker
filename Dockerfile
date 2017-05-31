@@ -56,6 +56,7 @@ RUN mkdir build && cd build && cmake $USERHOME/Nominatim && make
 # Initial import
 ENV PBF_DATA http://download.geofabrik.de/europe/monaco-latest.osm.pbf
 ENV IMPORT_THREADS 14
+RUN apt-get install -y curl
 RUN curl -L $PBF_DATA --create-dirs -o /srv/nominatim/src/data.osm.pbf
 RUN service postgresql start && \
     chown -R nominatim:nominatim ./src && \
