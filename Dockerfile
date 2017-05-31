@@ -48,6 +48,7 @@ WORKDIR /srv/nominatim
 RUN apt-get install -y openssl ca-certificates
 RUN git clone --recursive git://github.com/openstreetmap/Nominatim.git
 WORKDIR /srv/nominatim/Nominatim
+RUN apt-get install -y wget
 RUN wget -O data/country_osm_grid.sql.gz \
       http://www.nominatim.org/data/country_grid.sql.gz
 RUN mkdir build && cd build && cmake $USERHOME/Nominatim && make
