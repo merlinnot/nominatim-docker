@@ -1,0 +1,54 @@
+# -*-dockerfile-*-
+
+FROM phusion/baseimage:latest
+MAINTAINER Natan Sągol <m@merlinnot.com>
+
+ENV DEBIAN_FRONTEND noninteractive
+ENV LANG C.UTF-8
+RUN locale-gen en_US.UTF-8
+RUN update-locale LANG=en_US.UTF-8
+
+# Use baseimage-docker's init system.
+CMD ["/sbin/my_init"]
+
+# Update image
+RUN apt-get -qq update && apt-get -qq upgrade -y -o \
+      Dpkg::Options::="--force-confold"
+
+# Install build dependencies
+RUN apt-get install -y --no-install-recommends \
+      build-essential cmake g++ libboost-dev libboost-system-dev \
+      libboost-filesystem-dev libexpat1-dev zlib1g-dev libxml2-dev\
+      libbz2-dev libpq-dev libgeos-dev libgeos++-dev libproj-dev \
+      postgresql-server-dev-9.5 postgresql-9.5-postgis-2.2 \
+      postgresql-contrib-9.5 apache2 php php-pgsql libapache2-mod-php php-pear \
+      php-db git
+
+RUN useradd -d /srv/nominatim -s /bin/bash -m nominatim
+ENV USERNAME nominatim
+ENV USERHOME /srv/nominatim
+RUN chmod a+x $USERHOME
+
+# Tune postgresql configuration
+COPY postgresql-import.conf /etc/postgresql/9.5/main/postgresql.conf
+RUN systemctl restart postgresql
+
+# Add postgresql users
+RUN sudo -u postgres createuser -s $USERNAME
+RUN sudo -u postgres createuser www-data
+
+# Configure Apache
+COPY nominatim.conf /etc/apache2/conf-available/nominatim.conf
+RUN a2enconf nominatim
+RUN systemctl restart apache2
+
+# Install Nominatim
+WORKDIR /srv/nominatim
+RUN git clone --recursive git://github.com/openstreetmap/Nominatim.git
+WORKDIR /srv/nominatim/Nominatim
+RUN wget -O data/country_osm_grid.sql.gz \
+      http://www.nominatim.org/data/country_grid.sql.gz 
+RUN mkdir build && cd build && cmake $USERHOME/Nominatim && make
+
+# Clean up APT
+RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
