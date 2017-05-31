@@ -31,7 +31,6 @@ RUN chmod a+x $USERHOME
 
 # Tune postgresql configuration
 COPY postgresql-import.conf /etc/postgresql/9.5/main/postgresql.conf
-RUN systemctl restart postgresql
 
 # Add postgresql users
 RUN sudo -u postgres createuser -s $USERNAME
@@ -40,15 +39,19 @@ RUN sudo -u postgres createuser www-data
 # Configure Apache
 COPY nominatim.conf /etc/apache2/conf-available/nominatim.conf
 RUN a2enconf nominatim
-RUN systemctl restart apache2
 
 # Install Nominatim
 WORKDIR /srv/nominatim
 RUN git clone --recursive git://github.com/openstreetmap/Nominatim.git
 WORKDIR /srv/nominatim/Nominatim
 RUN wget -O data/country_osm_grid.sql.gz \
-      http://www.nominatim.org/data/country_grid.sql.gz 
+      http://www.nominatim.org/data/country_grid.sql.gz
 RUN mkdir build && cd build && cmake $USERHOME/Nominatim && make
 
 # Clean up APT
 RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
+# Init script
+WORKDIR /srv/nominatim
+COPY start.sh /srv/nominatim/start.sh
+CMD ["/srv/nominatim/start.sh"]
