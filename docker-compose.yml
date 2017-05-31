@@ -1,0 +1,22 @@
+version: '3'
+services:
+  dev:
+    privileged: true
+    environment:
+      - DISPLAY=${DISPLAY}
+    image: merlinnot/devver
+    dns:
+      - 8.8.4.4
+      - 8.8.8.8
+    ports:
+      - "3000"
+      - "8000"
+      - "8080-8085"
+      - "14500"
+    volumes:
+      - .:/code
+      - /tmp/.X11-unix:/tmp/.X11-unix
+      - ${HOME}/.ssh/id_rsa:/root/.ssh/id_rsa
+    ulimits:
+      nproc: 65535
+      nofile: 524288
