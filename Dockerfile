@@ -67,7 +67,7 @@ ENV USERHOME /srv/nominatim
 RUN chmod a+x ${USERHOME}
 
 # Tune postgresql configuration
-COPY postgresql-import.conf /etc/postgresql/9.5/main/postgresql.conf
+COPY postgresql-import.conf /etc/postgresql/9.6/main/postgresql.conf
 
 # Add postgresql users
 RUN service postgresql start && \
@@ -102,6 +102,9 @@ RUN service postgresql start && \
       --threads $IMPORT_THREADS \
       --osm2pgsql-cache 28000 && \
     service postgresql stop
+
+# Use safe postgresql configuration
+COPY postgresql-safe.conf /etc/postgresql/9.6/main/postgresql.conf
 
 # Clean up
 RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
