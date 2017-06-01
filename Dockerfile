@@ -66,15 +66,6 @@ ENV USERNAME nominatim
 ENV USERHOME /srv/nominatim
 RUN chmod a+x ${USERHOME}
 
-# Tune postgresql configuration
-COPY postgresql-import.conf /etc/postgresql/9.6/main/postgresql.conf
-
-# Add postgresql users
-RUN service postgresql start && \
-    sudo -u postgres createuser -s nominatim && \
-    sudo -u postgres createuser www-data && \
-    service postgresql stop
-
 # Configure Apache
 COPY nominatim.conf /etc/apache2/conf-available/nominatim.conf
 RUN a2enconf nominatim
@@ -89,6 +80,15 @@ RUN mkdir ${USERHOME}/Nominatim/build && \
     cd ${USERHOME}/Nominatim/build && \
     cmake ${USERHOME}/Nominatim && \
     make
+
+# Tune postgresql configuration
+COPY postgresql-import.conf /etc/postgresql/9.6/main/postgresql.conf
+
+# Add postgresql users
+RUN service postgresql start && \
+    sudo -u postgres createuser -s nominatim && \
+    sudo -u postgres createuser www-data && \
+    service postgresql stop
 
 # Initial import
 ENV PBF_DATA http://download.geofabrik.de/europe-latest.osm.pbf
