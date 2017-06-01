@@ -66,10 +66,6 @@ ENV USERNAME nominatim
 ENV USERHOME /srv/nominatim
 RUN chmod a+x ${USERHOME}
 
-# Configure Apache
-COPY nominatim.conf /etc/apache2/conf-available/nominatim.conf
-RUN a2enconf nominatim
-
 # Install Nominatim
 USER nominatim
 WORKDIR /srv/nominatim
@@ -109,6 +105,10 @@ RUN service postgresql start && \
 
 # Use safe postgresql configuration
 COPY postgresql-safe.conf /etc/postgresql/9.6/main/postgresql.conf
+
+# Configure Apache
+COPY nominatim.conf /etc/apache2/conf-available/nominatim.conf
+RUN a2enconf nominatim
 
 # Clean up
 RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
