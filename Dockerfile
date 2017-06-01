@@ -85,16 +85,20 @@ RUN mkdir ${USERHOME}/Nominatim/build && \
 COPY postgresql-import.conf /etc/postgresql/9.6/main/postgresql.conf
 
 # Add postgresql users
+USER root
 RUN service postgresql start && \
     sudo -u postgres createuser -s nominatim && \
     sudo -u postgres createuser www-data && \
     service postgresql stop
 
-# Initial import
+# Download data for initial import
+USER nominatim
 ENV PBF_DATA http://download.geofabrik.de/europe-latest.osm.pbf
 RUN curl -L $PBF_DATA --create-dirs -o /srv/nominatim/src/data.osm.pbf
-ENV IMPORT_THREADS 31
+
+# Initial import
 USER root
+ENV IMPORT_THREADS 31
 RUN service postgresql start && \
     sudo -u nominatim ${USERHOME}/Nominatim/build/utils/setup.php \
       --osm-file /srv/nominatim/src/data.osm.pbf \
