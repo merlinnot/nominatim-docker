@@ -49,10 +49,10 @@ RUN apt-get install -y --no-install-recommends \
       php-db \
       php-pear \
       php-pgsql \
-      postgresql-9.5-postgis-2.2 \
-      postgresql-9.5-postgis-scripts \
-      postgresql-contrib-9.5 \
-      postgresql-server-dev-9.5 \
+      postgresql-9.6-postgis-2.3 \
+      postgresql-9.6-postgis-scripts \
+      postgresql-contrib-9.6 \
+      postgresql-server-dev-9.6 \
       python \
       python-pip \
       python-setuptools \
@@ -83,7 +83,7 @@ ENV PBF_DATA http://download.geofabrik.de/europe-latest.osm.pbf
 RUN curl -L $PBF_DATA --create-dirs -o /srv/nominatim/src/data.osm.pbf
 
 # Tune postgresql configuration
-COPY postgresql-import.conf /etc/postgresql/9.5/main/postgresql.conf
+COPY postgresql-import.conf /etc/postgresql/9.6/main/postgresql.conf
 
 # Add postgresql users
 USER root
@@ -94,17 +94,17 @@ RUN service postgresql start && \
 
 # Initial import
 USER root
-ENV IMPORT_THREADS 31
+ENV IMPORT_THREADS 61
 RUN service postgresql start && \
     sudo -u nominatim ${USERHOME}/Nominatim/build/utils/setup.php \
       --osm-file /srv/nominatim/src/data.osm.pbf \
       --all \
       --threads $IMPORT_THREADS \
-      --osm2pgsql-cache 28000 && \
+      --osm2pgsql-cache 120000 && \
     service postgresql stop
 
 # Use safe postgresql configuration
-COPY postgresql-safe.conf /etc/postgresql/9.5/main/postgresql.conf
+COPY postgresql-safe.conf /etc/postgresql/9.6/main/postgresql.conf
 
 # Configure Apache
 COPY nominatim.conf /etc/apache2/conf-available/nominatim.conf
