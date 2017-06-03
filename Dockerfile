@@ -82,6 +82,34 @@ USER nominatim
 ENV PBF_DATA http://download.geofabrik.de/europe-latest.osm.pbf
 RUN curl -L $PBF_DATA --create-dirs -o /srv/nominatim/src/data.osm.pbf
 
+# Filter country boundaries
+USER nominatim
+RUN osmosis -v \
+      --read-pbf-fast workers=63 /srv/nominatim/src/data.osm.pbf \
+      --tf accept-nodes "boundary=administrative" \
+      --tf reject-relations \
+      --tf reject-ways \
+      --write-pbf file=/srv/nominatim/src/nodes.osm.pbf
+RUN osmosis -v \
+      --read-pbf-fast workers=63 /srv/nominatim/src/data.osm.pbf \
+      --tf accept-ways "boundary=administrative" \
+      --tf reject-relations  \
+      --used-node \
+      --write-pbf file=/srv/nominatim/src/ways.osm.pbf
+RUN osmosis -v \
+      --read-pbf-fast workers=63 /srv/nominatim/src/data.osm.pbf \
+      --tf accept-relations "boundary=administrative" \
+      --used-node \
+      --used-way \
+      --write-pbf file=/srv/nominatim/src/relations.osm.pbf
+RUN osmosis -v \
+      --rb /srv/nominatim/src/nodes.osm.pbf outPipe.0=N \
+      --rb /srv/nominatim/src/ways.osm.pbf outPipe.0=W \
+      --rb /srv/nominatim/src/relations.osm.pbf outPipe.0=R \
+      --merge inPipe.0=N inPipe.1=W outPipe.0=NW \
+      --merge inPipe.0=NW inPipe.1=R outPipe.0=NWR \
+      --wb inPipe.0=NWR file=/srv/nominatim/src/boundaries.osm.pbf
+
 # Tune postgresql configuration
 COPY postgresql-import.conf /etc/postgresql/9.6/main/postgresql.conf
 
@@ -97,7 +125,7 @@ USER root
 ENV IMPORT_THREADS 61
 RUN service postgresql start && \
     sudo -u nominatim ${USERHOME}/Nominatim/build/utils/setup.php \
-      --osm-file /srv/nominatim/src/data.osm.pbf \
+      --osm-file /srv/nominatim/src/boundaries.osm.pbf \
       --all \
       --threads $IMPORT_THREADS \
       --osm2pgsql-cache 120000 && \
