@@ -136,7 +136,7 @@ RUN IMPORT_CONFIG_URL="${PGCONFIG_URL}? \
       max_connections=$((8 * ${BUILD_THREADS} + 32))& \
       environment_name=DW& \
       include_pgbadger=false" && \
-    IMPORT_CONFIG_URL=echo "${IMPORT_CONFIG_URL// /}" && \
+    IMPORT_CONFIG_URL=${IMPORT_CONFIG_URL// /} && \
     service postgresql start && \
     ( curl "${IMPORT_CONFIG_URL}";  \
       echo $'ALTER SYSTEM SET fsync TO \'off\'\n\
@@ -168,7 +168,7 @@ RUN IMPORT_CONFIG_URL="${PGCONFIG_URL}? \
       max_connections=$((8 * ${RUNTIME_THREADS} + 32))& \
       environment_name=WEB& \
       include_pgbadger=true" && \
-    IMPORT_CONFIG_URL=echo "${IMPORT_CONFIG_URL// /}" && \
+    IMPORT_CONFIG_URL=${IMPORT_CONFIG_URL// /} && \
     service postgresql start && \
     ( curl "${IMPORT_CONFIG_URL}";  \
       echo $'ALTER SYSTEM SET fsync TO \'on\'\n\
