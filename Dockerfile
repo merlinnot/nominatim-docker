@@ -158,12 +158,12 @@ RUN service postgresql start && \
 # Tune postgresql configuration for import
 USER root
 ENV PGCONFIG_URL https://api.pgconfig.org/v1/tuning/get-config
-RUN IMPORT_CONFIG_URL = "${PGCONFIG_URL}?
-      format=alter_system&
-      pg_version=${PGSQL_VERSION}&
-      total_ram=${BUILD_MEMORY}&
-      max_connections=$((8 * ${BUILD_THREADS} + 32))&
-      environment_name=DW&
+RUN IMPORT_CONFIG_URL = "${PGCONFIG_URL}? \
+      format=alter_system& \
+      pg_version=${PGSQL_VERSION}& \
+      total_ram=${BUILD_MEMORY}& \
+      max_connections=$((8 * ${BUILD_THREADS} + 32))& \
+      environment_name=DW& \
       include_pgbadger=false" && \
     IMPORT_CONFIG_URL = echo ${IMPORT_CONFIG_URL// /} && \
     service postgresql start && \
@@ -190,12 +190,12 @@ ARG RUNTIME_MEMORY=8GB
 
 # Use safe postgresql configuration
 USER root
-RUN IMPORT_CONFIG_URL = "${PGCONFIG_URL}?
-      format=alter_system&
-      pg_version=${PGSQL_VERSION}&
-      total_ram=${RUNTIME_MEMORY}&
-      max_connections=$((8 * ${RUNTIME_THREADS} + 32))&
-      environment_name=WEB&
+RUN IMPORT_CONFIG_URL = "${PGCONFIG_URL}? \
+      format=alter_system& \
+      pg_version=${PGSQL_VERSION}& \
+      total_ram=${RUNTIME_MEMORY}& \
+      max_connections=$((8 * ${RUNTIME_THREADS} + 32))& \
+      environment_name=WEB& \
       include_pgbadger=true" && \
     IMPORT_CONFIG_URL = echo ${IMPORT_CONFIG_URL// /} && \
     service postgresql start && \
