@@ -149,7 +149,7 @@ RUN IMPORT_CONFIG_URL="${PGCONFIG_URL}? \
 USER root
 RUN service postgresql start && \
     sudo -u nominatim ${USERHOME}/Nominatim/build/utils/setup.php \
-      --osm-file /srv/nominatim/src/boundaries.osm.pbf \
+      --osm-file /srv/nominatim/src/data.osm.pbf \
       --all \
       --threads ${BUILD_THREADS} \
       --osm2pgsql-cache ${OSM2PGSQL_CACHE} && \
