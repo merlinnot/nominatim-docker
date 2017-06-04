@@ -136,13 +136,13 @@ RUN IMPORT_CONFIG_URL="${PGCONFIG_URL}? \
       max_connections=$((8 * ${BUILD_THREADS} + 32))& \
       environment_name=DW& \
       include_pgbadger=false" && \
-    IMPORT_CONFIG_URL=echo ${IMPORT_CONFIG_URL// /} && \
+    IMPORT_CONFIG_URL=echo "${IMPORT_CONFIG_URL// /}" && \
     service postgresql start && \
-    pgsql < curl ${IMPORT_CONFIG_URL} && \
-    pgsql < EOF \
-        fsync = off \
-        full_page_writes = off \
-      EOF && \
+    ( curl "${IMPORT_CONFIG_URL}";  \
+      echo $'ALTER SYSTEM SET fsync TO \'off\'\n\
+        ALTER SYSTEM SET full_page_writes TO \'off\'\n\
+        ALTER SYSTEM SET logging_collector TO \'off\''; \
+    ) | sudo -u postgres psql -e && \
     service postgresql stop
 
 # Initial import
@@ -161,20 +161,20 @@ ARG RUNTIME_MEMORY=8GB
 
 # Use safe postgresql configuration
 USER root
-RUN IMPORT_CONFIG_URL = "${PGCONFIG_URL}? \
+RUN IMPORT_CONFIG_URL="${PGCONFIG_URL}? \
       format=alter_system& \
       pg_version=${PGSQL_VERSION}& \
       total_ram=${RUNTIME_MEMORY}& \
       max_connections=$((8 * ${RUNTIME_THREADS} + 32))& \
       environment_name=WEB& \
       include_pgbadger=true" && \
-    IMPORT_CONFIG_URL = echo ${IMPORT_CONFIG_URL// /} && \
+    IMPORT_CONFIG_URL=echo "${IMPORT_CONFIG_URL// /}" && \
     service postgresql start && \
-    pgsql < curl ${IMPORT_CONFIG_URL} && \
-    pgsql < EOF \
-        fsync = on \
-        full_page_writes = on \
-      EOF && \
+    ( curl "${IMPORT_CONFIG_URL}";  \
+      echo $'ALTER SYSTEM SET fsync TO \'on\'\n\
+        ALTER SYSTEM SET full_page_writes TO \'on\'\n\
+        ALTER SYSTEM SET logging_collector TO \'on\''; \
+    ) | sudo -u postgres psql -e && \
     service postgresql stop
 
 # Configure Apache
