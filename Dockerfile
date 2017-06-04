@@ -3,6 +3,9 @@
 FROM ubuntu:16.04
 LABEL maintainer Natan Sągol <m@merlinnot.com>
 
+# Use bash
+RUN rm /bin/sh && ln -s /bin/bash /bin/sh
+
 # Update image
 RUN apt-get -qq update && apt-get -qq upgrade -y -o \
       Dpkg::Options::="--force-confold"
