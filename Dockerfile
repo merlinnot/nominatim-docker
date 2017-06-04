@@ -111,41 +111,10 @@ RUN mkdir ${USERHOME}/Nominatim/build && \
 USER nominatim
 RUN curl -L ${PBF_URL} --create-dirs -o /srv/nominatim/src/data.osm.pbf
 
-# Filter country boundaries
+# Filter administrative boundaries
 USER nominatim
-RUN if ${IMPORT_ADMINISTRATIVE}; then \
-      osmosis -v \
-        --read-pbf-fast workers=${IMPORT_THREADS} /srv/nominatim/src/data.osm.pbf \
-        --tf accept-nodes "boundary=administrative" \
-        --tf reject-relations \
-        --tf reject-ways \
-        --write-pbf file=/srv/nominatim/src/nodes.osm.pbf \
-    fi
-RUN if ${IMPORT_ADMINISTRATIVE}; then \
-      osmosis -v \
-        --read-pbf-fast workers=${IMPORT_THREADS} /srv/nominatim/src/data.osm.pbf \
-        --tf accept-ways "boundary=administrative" \
-        --tf reject-relations  \
-        --used-node \
-        --write-pbf file=/srv/nominatim/src/ways.osm.pbf \
-    fi
-RUN if ${IMPORT_ADMINISTRATIVE}; then \
-      osmosis -v \
-        --read-pbf-fast workers=${IMPORT_THREADS} /srv/nominatim/src/data.osm.pbf \
-        --tf accept-relations "boundary=administrative" \
-        --used-node \
-        --used-way \
-        --write-pbf file=/srv/nominatim/src/relations.osm.pbf \
-    fi
-RUN if ${IMPORT_ADMINISTRATIVE}; then \
-      osmosis -v \
-        --rb /srv/nominatim/src/nodes.osm.pbf outPipe.0=N \
-        --rb /srv/nominatim/src/ways.osm.pbf outPipe.0=W \
-        --rb /srv/nominatim/src/relations.osm.pbf outPipe.0=R \
-        --merge inPipe.0=N inPipe.1=W outPipe.0=NW \
-        --merge inPipe.0=NW inPipe.1=R outPipe.0=NWR \
-        --wb inPipe.0=NWR file=/srv/nominatim/src/data.osm.pbf \
-    fi
+COPY scripts /srv/nominatim/scripts/
+RUN /srv/nominatim/scripts/filter_administrative.sh
 
 # Add postgresql users
 USER root

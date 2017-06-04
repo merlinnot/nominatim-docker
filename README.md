@@ -1,8 +1,14 @@
-# Nominatim Docker container
+Nominatim Docker container
+==========================
 
 Fully-featured container for geocoding, reverse geocoding and address lookup based on [Nominatim](https://github.com/openstreetmap/Nominatim) and [Open Street Map](http://www.openstreetmap.org) data.
 
-## (#Build)
+## Table of content
+- [Build](#build)
+- [Run](#run)
+- [Develop](#develop)
+
+## Build
 The build process is fairly straightforward, but requires lots of computer resources and can take days to complete.
 
 To build, install [Docker](https://get.docker.com) and run following command:
