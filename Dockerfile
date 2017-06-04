@@ -29,7 +29,7 @@ ARG BUILD_THREADS=16
 ARG BUILD_MEMORY=32GB
 ARG PGSQL_VERSION=9.6
 ARG POSTGIS_VERSION=2.3
-ARG OSM2PGSQL_CACHE=28000
+ARG OSM2PGSQL_CACHE=24000
 
 # Set import variables
 ARG PBF_URL=https://planet.osm.org/pbf/planet-latest.osm.pbf
@@ -185,7 +185,7 @@ RUN service postgresql start && \
     service postgresql stop
 
 # Set runtime variables
-ARG RUNTIME_THREADS=16
+ARG RUNTIME_THREADS=2
 ARG RUNTIME_MEMORY=8GB
 
 # Use safe postgresql configuration
