@@ -28,16 +28,8 @@ RUN echo "deb http://apt.postgresql.org/pub/repos/apt xenial-pgdg main" >> \
 RUN apt-get -qq update
 
 # Set build variables
-ARG BUILD_THREADS=16
-ARG BUILD_MEMORY=32GB
 ARG PGSQL_VERSION=9.6
 ARG POSTGIS_VERSION=2.3
-ARG OSM2PGSQL_CACHE=24000
-
-# Set import variables
-ARG PBF_URL=https://planet.osm.org/pbf/planet-latest.osm.pbf
-ARG REPLICATION_URL=https://planet.osm.org/replication/hour/
-ARG IMPORT_ADMINISTRATIVE=false
 
 # Install build dependencies
 USER root
@@ -88,6 +80,7 @@ RUN chmod a+x ${USERHOME}
 
 # Install Nominatim
 USER nominatim
+ARG REPLICATION_URL=https://planet.osm.org/replication/hour/
 WORKDIR /srv/nominatim
 RUN git clone --recursive git://github.com/openstreetmap/Nominatim.git
 RUN echo $'<?php\n\
@@ -112,10 +105,15 @@ RUN mkdir ${USERHOME}/Nominatim/build && \
 
 # Download data for initial import
 USER nominatim
+ARG PBF_URL=https://planet.osm.org/pbf/planet-latest.osm.pbf
 RUN curl -L ${PBF_URL} --create-dirs -o /srv/nominatim/src/data.osm.pbf
 
 # Filter administrative boundaries
 USER nominatim
+ARG BUILD_THREADS=16
+ENV BUILD_THREADS ${BUILD_THREADS}
+ARG IMPORT_ADMINISTRATIVE=false
+ENV IMPORT_ADMINISTRATIVE ${IMPORT_ADMINISTRATIVE}
 COPY scripts /srv/nominatim/scripts/
 RUN /srv/nominatim/scripts/filter_administrative.sh
 
@@ -128,6 +126,7 @@ RUN service postgresql start && \
 
 # Tune postgresql configuration for import
 USER root
+ARG BUILD_MEMORY=32GB
 ENV PGCONFIG_URL https://api.pgconfig.org/v1/tuning/get-config
 RUN IMPORT_CONFIG_URL="${PGCONFIG_URL}? \
       format=alter_system& \
@@ -147,6 +146,7 @@ RUN IMPORT_CONFIG_URL="${PGCONFIG_URL}? \
 
 # Initial import
 USER root
+ARG OSM2PGSQL_CACHE=24000
 RUN service postgresql start && \
     sudo -u nominatim ${USERHOME}/Nominatim/build/utils/setup.php \
       --osm-file /srv/nominatim/src/data.osm.pbf \
@@ -155,12 +155,10 @@ RUN service postgresql start && \
       --osm2pgsql-cache ${OSM2PGSQL_CACHE} && \
     service postgresql stop
 
-# Set runtime variables
-ARG RUNTIME_THREADS=2
-ARG RUNTIME_MEMORY=8GB
-
 # Use safe postgresql configuration
 USER root
+ARG RUNTIME_THREADS=2
+ARG RUNTIME_MEMORY=8GB
 RUN IMPORT_CONFIG_URL="${PGCONFIG_URL}? \
       format=alter_system& \
       pg_version=${PGSQL_VERSION}& \
