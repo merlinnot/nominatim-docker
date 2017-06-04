@@ -17,6 +17,7 @@ docker build github.com/merlinnot/nominatim-docker \
 ```
 
 Full list of build arguments:
+
 | Name                  | Default | Description |
 | --------------------- | ------- | ----------- |
 | BUILD_THREADS         | 16      | Number of threads used during build process. |
