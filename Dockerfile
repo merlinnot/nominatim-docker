@@ -111,9 +111,7 @@ RUN curl -L ${PBF_URL} --create-dirs -o /srv/nominatim/src/data.osm.pbf
 # Filter administrative boundaries
 USER nominatim
 ARG BUILD_THREADS=16
-ENV BUILD_THREADS ${BUILD_THREADS}
 ARG IMPORT_ADMINISTRATIVE=false
-ENV IMPORT_ADMINISTRATIVE ${IMPORT_ADMINISTRATIVE}
 COPY scripts /srv/nominatim/scripts/
 RUN /srv/nominatim/scripts/filter_administrative.sh
 

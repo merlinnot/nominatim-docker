@@ -2,7 +2,7 @@
 
 if ${IMPORT_ADMINISTRATIVE}; then
   FAIL=0
-  FILTER_THREADS=$((${IMPORT_THREADS} / 3))
+  FILTER_THREADS=$((${BUILD_THREADS} / 3))
   osmosis -v \
     --read-pbf-fast workers=${FILTER_THREADS} /srv/nominatim/src/data.osm.pbf \
     --tf accept-nodes "boundary=administrative" \
