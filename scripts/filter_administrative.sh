@@ -26,7 +26,7 @@ if ${IMPORT_ADMINISTRATIVE}; then
 
   for job in `jobs -p`
   do
-    echo ${job}
+    echo "Job PID ${job}"
     wait ${job} || let "FAIL+=1"
   done
 
