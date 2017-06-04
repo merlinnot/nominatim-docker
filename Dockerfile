@@ -95,7 +95,7 @@ RUN echo $'<?php\n\
       @define('CONST_Pyosmium_Binary', '/usr/local/bin/pyosmium-get-changes'); \n\
       # Website settings
       @define('CONST_Website_BaseURL', '/nominatim/'); \n\
-      @define('CONST_Replication_Url', 'http://download.geofabrik.de/europe-updates'); \n\
+      @define('CONST_Replication_Url', '${REPLICATION_URL}'); \n\
       @define('CONST_Replication_MaxInterval', '86400'); \n\
       @define('CONST_Replication_Update_Interval', '86400'); \n\
       @define('CONST_Replication_Recheck_Interval', '900'); \n'\
@@ -109,7 +109,7 @@ RUN mkdir ${USERHOME}/Nominatim/build && \
 
 # Download data for initial import
 USER nominatim
-RUN curl -L $PBF_DATA --create-dirs -o /srv/nominatim/src/data.osm.pbf
+RUN curl -L ${PBF_URL} --create-dirs -o /srv/nominatim/src/data.osm.pbf
 
 # Filter country boundaries
 USER nominatim
