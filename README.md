@@ -42,6 +42,7 @@ To run container built in the [previous step](#build) use
 ```bash
 docker run --restart=always -d -p 80:80 nominatim
 ```
+API will be available at port `80` under `/nominatim/` directory.
 
 ## Develop
 This project uses [Devver](https://github.com/merlinnot/devver), but feel free to use any of your favorite editors.
