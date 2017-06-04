@@ -138,10 +138,10 @@ RUN IMPORT_CONFIG_URL="${PGCONFIG_URL}? \
       include_pgbadger=false" && \
     IMPORT_CONFIG_URL=${IMPORT_CONFIG_URL// /} && \
     service postgresql start && \
-    ( curl "${IMPORT_CONFIG_URL}";  \
-      echo $'ALTER SYSTEM SET fsync TO \'off\'\n\
-        ALTER SYSTEM SET full_page_writes TO \'off\'\n\
-        ALTER SYSTEM SET logging_collector TO \'off\''; \
+    ( curl "${IMPORT_CONFIG_URL}"; \
+      echo $'ALTER SYSTEM SET fsync TO \'off\'\n'; \
+      echo $'ALTER SYSTEM SET full_page_writes TO \'off\'\n' \
+      echo $'ALTER SYSTEM SET logging_collector TO \'off\'\n'; \
     ) | sudo -u postgres psql -e && \
     service postgresql stop
 
@@ -170,10 +170,10 @@ RUN IMPORT_CONFIG_URL="${PGCONFIG_URL}? \
       include_pgbadger=true" && \
     IMPORT_CONFIG_URL=${IMPORT_CONFIG_URL// /} && \
     service postgresql start && \
-    ( curl "${IMPORT_CONFIG_URL}";  \
-      echo $'ALTER SYSTEM SET fsync TO \'on\'\n\
-        ALTER SYSTEM SET full_page_writes TO \'on\'\n\
-        ALTER SYSTEM SET logging_collector TO \'on\''; \
+    ( curl "${IMPORT_CONFIG_URL}"; \
+      echo $'ALTER SYSTEM SET fsync TO \'on\'\n'; \
+      echo $'ALTER SYSTEM SET full_page_writes TO \'on\'\n' \
+      echo $'ALTER SYSTEM SET logging_collector TO \'on\'\n'; \
     ) | sudo -u postgres psql -e && \
     service postgresql stop
 
