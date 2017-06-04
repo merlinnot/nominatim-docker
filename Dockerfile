@@ -126,14 +126,14 @@ RUN service postgresql start && \
 # Tune postgresql configuration for import
 USER root
 ENV PGCONFIG_URL https://api.pgconfig.org/v1/tuning/get-config
-RUN IMPORT_CONFIG_URL = "${PGCONFIG_URL}? \
+RUN IMPORT_CONFIG_URL="${PGCONFIG_URL}? \
       format=alter_system& \
       pg_version=${PGSQL_VERSION}& \
       total_ram=${BUILD_MEMORY}& \
       max_connections=$((8 * ${BUILD_THREADS} + 32))& \
       environment_name=DW& \
       include_pgbadger=false" && \
-    IMPORT_CONFIG_URL = echo ${IMPORT_CONFIG_URL// /} && \
+    IMPORT_CONFIG_URL=echo ${IMPORT_CONFIG_URL// /} && \
     service postgresql start && \
     pgsql < curl ${IMPORT_CONFIG_URL} && \
     pgsql < EOF \
