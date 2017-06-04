@@ -87,20 +87,19 @@ RUN chmod a+x ${USERHOME}
 USER nominatim
 WORKDIR /srv/nominatim
 RUN git clone --recursive git://github.com/openstreetmap/Nominatim.git
-RUN tee ./Nominatim/settings/local.php << EOF \
-      <?php \
+RUN echo $'<?php\n\
       # Paths
-      @define('CONST_Postgresql_Version', '${PGSQL_VERSION}'); \
-      @define('CONST_Postgis_Version', '${POSTGIS_VERSION}'); \
-      @define('CONST_Osm2pgsql_Flatnode_File', '/srv/nominatim/flatnode'); \
-      @define('CONST_Pyosmium_Binary', '/usr/local/bin/pyosmium-get-changes'); \
+      @define('CONST_Postgresql_Version', '${PGSQL_VERSION}'); \n\
+      @define('CONST_Postgis_Version', '${POSTGIS_VERSION}'); \n\
+      @define('CONST_Osm2pgsql_Flatnode_File', '/srv/nominatim/flatnode'); \n\
+      @define('CONST_Pyosmium_Binary', '/usr/local/bin/pyosmium-get-changes'); \n\
       # Website settings
-      @define('CONST_Website_BaseURL', '/nominatim/'); \
-      @define('CONST_Replication_Url', 'http://download.geofabrik.de/europe-updates'); \
-      @define('CONST_Replication_MaxInterval', '86400'); \
-      @define('CONST_Replication_Update_Interval', '86400'); \
-      @define('CONST_Replication_Recheck_Interval', '900'); \
-    EOF
+      @define('CONST_Website_BaseURL', '/nominatim/'); \n\
+      @define('CONST_Replication_Url', 'http://download.geofabrik.de/europe-updates'); \n\
+      @define('CONST_Replication_MaxInterval', '86400'); \n\
+      @define('CONST_Replication_Update_Interval', '86400'); \n\
+      @define('CONST_Replication_Recheck_Interval', '900'); \n'\
+    > ./Nominatim/settings/local.php
 RUN wget -O Nominatim/data/country_osm_grid.sql.gz \
       http://www.nominatim.org/data/country_grid.sql.gz
 RUN mkdir ${USERHOME}/Nominatim/build && \
