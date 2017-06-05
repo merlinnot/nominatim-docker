@@ -40,7 +40,7 @@ Full list of build arguments:
 ## Run
 To run container built in the [previous step](#build) use
 ```bash
-docker run --restart=always -d -p 80:80 nominatim
+docker run --restart=always -d -p 80:80 merlinnot/nominatim-docker
 ```
 API will be available at port `80` under `/nominatim/` directory.
 
