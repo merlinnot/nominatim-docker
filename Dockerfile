@@ -1,6 +1,6 @@
 # -*-dockerfile-*-
 
-FROM ubuntu:16.04
+FROM phusion/baseimage:latest
 LABEL maintainer Natan Sągol <m@merlinnot.com>
 
 # Use bash
@@ -112,7 +112,8 @@ RUN curl -L ${PBF_URL} --create-dirs -o /srv/nominatim/src/data.osm.pbf
 USER nominatim
 ARG BUILD_THREADS=16
 ARG IMPORT_ADMINISTRATIVE=false
-COPY scripts /srv/nominatim/scripts/
+COPY scripts/filter_administrative.sh \
+      /srv/nominatim/scripts/filter_administrative.sh
 RUN /srv/nominatim/scripts/filter_administrative.sh
 
 # Add postgresql users
@@ -185,6 +186,13 @@ RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 # Expose ports
 EXPOSE 8080
 
-# Init script
-COPY start.sh /srv/nominatim/start.sh
-CMD ["/srv/nominatim/start.sh"]
+# Init scripts
+USER root
+ENV KILL_PROCESS_TIMEOUT=300
+ENV KILL_ALL_PROCESSES_TIMEOUT=300
+RUN mkdir -p /etc/my_init.d
+COPY scripts/start_postgresql.sh /etc/my_init.d/00-postgresql.sh
+RUN chmod +x /etc/my_init.d/00-postgresql.sh
+COPY scripts/start_apache2.sh /etc/my_init.d/00-apache2.sh
+RUN chmod +x /etc/my_init.d/00-apache2.sh
+CMD ["/sbin/my_init"]
