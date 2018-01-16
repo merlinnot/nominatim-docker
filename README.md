@@ -29,7 +29,7 @@ Full list of build arguments:
 | BUILD_THREADS         | 16      | Number of threads used during build process. |
 | BUILD_MEMORY          | 32GB    | Memory dedicated to postgresql during build process. |
 | PGSQL_VERSION         | 9.6     | [PostgreSQL](https://www.postgresql.org) version. |
-| POSTGIS_VERSION       | 2.3     | [PostGIS](http://postgis.net) version. |
+| POSTGIS_VERSION       | 2.4     | [PostGIS](http://postgis.net) version. |
 | OSM2PGSQL_CACHE       | 24000   | [osm2pgsql](https://github.com/openstreetmap/osm2pgsql) cache size in MB, should be set to about 75% of memory available during build process, to a maximum of about 30000. Additional RAM will not be used. |
 | PBF_URL               | [planet](https://planet.osm.org/pbf/planet-latest.osm.pbf) | URL to OpenStreetMap data in PBF format. See [geofabrik.de](http://download.geofabrik.de) for extracts. |
 | REPLICATION_URL       | [planet](https://planet.osm.org/replication/hour/) | URL to directory with periodic updates. I recommend using [geofabrik.de](http://download.geofabrik.de) (see `raw directory index` and lookup `updates`). |

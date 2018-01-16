@@ -29,7 +29,7 @@ RUN apt-get -qq update
 
 # Set build variables
 ARG PGSQL_VERSION=9.6
-ARG POSTGIS_VERSION=2.3
+ARG POSTGIS_VERSION=2.4
 
 # Install build dependencies
 USER root
