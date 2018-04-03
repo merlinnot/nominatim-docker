@@ -57,9 +57,9 @@ RUN apt-get install -y --no-install-recommends \
       osmosis \
       php \
       php-db \
+      php-intl \
       php-pear \
       php-pgsql \
-      php-intl \
       postgresql-${PGSQL_VERSION}-postgis-${POSTGIS_VERSION} \
       postgresql-${PGSQL_VERSION}-postgis-scripts \
       postgresql-contrib-${PGSQL_VERSION} \
