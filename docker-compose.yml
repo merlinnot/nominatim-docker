@@ -4,7 +4,7 @@ services:
     privileged: true
     environment:
       - DISPLAY=${DISPLAY}
-    image: merlinnot/devver
+    image: merlinnot/devver:latest@sha256:a9469ef7ce950cca3447fc6db599c70d32620f41a8917c41f36a2e75d9c77964
     dns:
       - 8.8.4.4
       - 8.8.8.8
